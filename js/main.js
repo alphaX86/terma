@@ -1,211 +1,193 @@
-var API_PREFIX = 'https://api.github.com/repos/alphax86/terma/git',
-    e = "visitor@axro";
-var GitHub = new (function() {
-    this.fs = new Object;
-    this.loaded = false;
-    this.stack = new Array;
+var before = document.getElementById("before");
+var liner = document.getElementById("liner");
+var command = document.getElementById("typer");
+var textarea = document.getElementById("texter");
+var terminal = document.getElementById("terminal");
 
-    this.getCurrentPath = function(){
-        if(this.stack.length == 0) 
-            return '~/';
-        return this.stack.join('/')
-    },    
-    this.getCurrentWorkingDirectory = function() {
-        if(this.stack.length == 0) 
-            return this.fs;
-        
-        var fs = this.fs
-        for(var i in this.stack) {
-            fs = fs[this.stack[i]];
+var git = 0;
+var pw = false;
+let pwd = false;
+var commands = [];
+
+setTimeout(function () {
+    loopLines(banner, "", 80);
+    textarea.focus();
+}, 100);
+
+window.addEventListener("keyup", enterKey);
+
+console.log("☟︎⚐︎☹︎✌︎✏︎ ✡︎⚐︎🕆︎ ☞︎⚐︎🕆︎☠︎👎︎ 💣︎☜︎ ☟︎🕆︎☟︎✍︎ ✌︎☠︎✡︎🕈︎✌︎✡︎📪︎ 🏱︎✌︎💧︎💧︎🕈︎⚐︎☼︎👎︎ ☞︎⚐︎☼︎ 💧︎☜︎👍︎☼︎☜︎❄︎ 👍︎⚐︎💣︎💣︎✌︎☠︎👎︎ ✋︎💧︎ 🕯︎✌︎✠︎☼︎⚐︎🕯︎📬︎ ☟︎⚐︎🏱︎☜︎ ✡︎⚐︎🕆︎ 😐︎☠︎⚐︎🕈︎ 🕈︎☟︎✌︎❄︎ ✡︎⚐︎🕆︎🕯︎☼︎☜︎ 👎︎⚐︎✋︎☠︎☝︎✏︎ :)");
+
+//init
+textarea.value = "";
+command.innerHTML = textarea.value;
+
+function enterKey(e) {
+    if (e.keyCode == 181) {
+        document.location.reload(true);
+    }
+    if (pw) {
+        let et = "*";
+        let w = textarea.value.length;
+        command.innerHTML = et.repeat(w);
+        if (textarea.value === password) {
+            pwd = true;
         }
-        return fs;
-    };
-        
-    var self = this;    
-    $.getJSON(API_PREFIX + '/refs/heads/content', function(data, textStatus, jqXHR){
-    //$.getJSON('data/master.json', function(data, textStatus, jqXHR){
-        var sha = data.object.sha;
-        $.getJSON(API_PREFIX + '/trees/'+sha+'?recursive=1', function(data, textStatus, jqXHR){
-        //$.getJSON('data/tree.json', function(data, textStatus, jqXHR){
-            for(i in data.tree) {
-                var item = data.tree[i];                
-                var paths = item.path.split('/');   
-                
-                var fs = self.fs;                
-                for(var i=0; i< paths.length; i++) {
-                    var path = paths[i];                    
-                    
-                    if(!fs.hasOwnProperty(path)) {
-                       fs[path] = new Object;
-                    } else {
-                       fs = fs[path]
-                    }
-                       
-                    if (i == paths.length-1) {
-                        item.path = path;
-                        fs[path] = item;
-                    }
-                }
-            }
-            self.loaded = true;
-        });
-    });
-})();
-
-var App = {
-    echo: function(text) {
-        this.echo(text);
-    },
-    help: function() {
-        this.echo("Available commands:");
-        this.echo("\tabout       information about the author");
-        this.echo("\tcontact     display contact infomation");
-        this.echo("\tprojects    display project list");
-        this.echo("\tskill       display skill tier list");
-        this.echo("\twhoami      display who the user is");
-        this.echo("\tmeow        don't! just don't! (╯°□°）╯︵ ┻━┻");
-        this.echo("\tdank        you know what it is ( ͡° ͜ʖ ͡°) also, it's a meme. Don't take it seriously.");
-        this.echo("\thelp        this help screen.");                        
-        this.echo("");
-        this.echo("some other basic Linux commands are available: cat cd id ls sudo")
-    },
-    about: function() {
-        this.echo("Hello, my name is Aadhitya, I'm from Chennai, India.");
-        this.echo("I'm a software developer who really loves Open Source and passionate to create, contrinute to Open Source projects. Currently I work at Citi as a SDE.");
-        this.echo("My technical summary:");
-        this.echo("\t- Have strong knowledge about Linux operating system and open source software.");
-        this.echo("\t- Responsible for day-to-day defense of our network, servers.");
-        this.echo("\t- Experienced with web application development, specialist with PHP/MySQL. Can develop desktop/web application with Java/Python.");
-        this.echo("\t- Able to make mobile apps using many different technologies (Native/Titanium/PhoneGap)");
-        this.echo("\nIf you want to say hi or anything, feel free to get in touch via [[b;#44D544;]contact] command");
-
-    },
-    contact: function() {
-        this.echo("Get in touch via:")
-        this.echo("Email:   " + decode64('YWFkaGl0eWE4NjRAcHJvdG9uLm1l')); 
-        this.echo("Twitter: @kryox64"); 
-        this.echo("GitHub:  alphax86"); 
-    },
-    whoami: function() {
-        this.echo("visitor", {raw:true});
-
-        
-    },
-    id: function(){
-        this.echo("uid=1000(visitor) gid=1000(visitor) groups=1000(visitor)");
-
-        
-    },
-    ls: function() {        
-        var wd = GitHub.getCurrentWorkingDirectory();
-        for(i in wd) {
-            if(typeof wd[i] == 'object') {
-                var item = wd[i];
-                this.echo(item.mode+'\t' + (item.type=='tree'?'[[b;#44D544;]'+item.path+']':item.path));
-            }
+        if (pwd && e.keyCode == 13) {
+            loopLines(secret, "color2 margin", 120);
+            command.innerHTML = "";
+            textarea.value = "";
+            pwd = false;
+            pw = false;
+            liner.classList.remove("password");
+        } else if (e.keyCode == 13) {
+            addLine("Wrong password", "error", 0);
+            command.innerHTML = "";
+            textarea.value = "";
+            pw = false;
+            liner.classList.remove("password");
         }
-
-        
-    },
-    cd: function(path) {        
-        if(path == '..') {
-            GitHub.stack.pop();
-            return;
-        }        
-        var wd = GitHub.getCurrentWorkingDirectory();
-        var item = wd[path]
-        if(!item) {
-            this.error("cd: " + path + ": No such file or directory");
-        } else if(item.type != 'tree') {
-            this.error("cd: " + path  + ": Not a directory");
-        } else {
-            GitHub.stack.push(path);
+    } else {
+        if (e.keyCode == 13) {
+            commands.push(command.innerHTML);
+            git = commands.length;
+            addLine("visitor@axro.com:~$ " + command.innerHTML, "no-animation", 0);
+            commander(command.innerHTML.toLowerCase());
+            command.innerHTML = "";
+            textarea.value = "";
         }
-
-        
-    },
-    cat: function(path){
-        var wd = GitHub.getCurrentWorkingDirectory();
-        var item = wd[path];
-        if(!item) {
-            this.error("cat: " + path + ": No such file or directory");
-        } else if(item.type == 'tree') {
-            this.error("cat: " + path  + ": Is a directory");
-        } else {
-            var term = this;
-            term.pause();
-            $.getJSON(item.url, function(data, textStatus, jqXHR){
-                var content = data.content.trim()
-                if(data.encoding == 'base64')
-                    content = decode64(content);
-                term.echo(content); 
-                term.resume();
-            });
+        if (e.keyCode == 38 && git != 0) {
+            git -= 1;
+            textarea.value = commands[git];
+            command.innerHTML = textarea.value;
         }
-        
-    },
-    sudo: function() {
-        this.echo("Sorry, I can't do that. You are not in the sudoers file. This incident will be reported. ￣へ￣");
-    },
-    skill: function() {
-        this.echo("Skill tier list:");
-        this.echo("\t- [[b;#44D544;]Master] - C/C++, Python, Git");
-        this.echo("\t- [[b;#44D544;]Intermediate] - Java, JS, Go, Docker, Linux, MySQL, MongoDB");
-        this.echo("\t- [[b;#44D544;]Beginner] - Kafka, Spark, AWS, Kubernetes");
-    },
-    projects: function() {
-        this.echo("Project list:");
-        this.echo("\t- [[b;#44D544;]terma]      - this page");
-        this.echo("\t- [[b;#44D544;]CreDeX]     - https://github.com/alphaX86/neueda-credit");
-        this.echo("\t- [[b;#44D544;]arkLB]      - https://github.com/ark-7/arkLB");
-        this.echo("\t- [[b;#44D544;]HexE]       - https://github.com/HexE-r/HexE");
-        this.echo("\t- [[b;#44D544;]accentVGG]  - https://github.com/k173-x/accent-vgg");
-        this.echo("\t- [[b;#44D544;]meshery]    - https://github.com/meshery/meshery");
-    },
-    meow: function() {
-        this.echo("Byeeeeeee ┬─┬ノ( º _ ºノ)");
-        this.echo("Just kidding, I'm not going anywhere. Not yet...");
-        //window.location.href = "https://axro.in";
-    },
-    dank: function() {
-        var term = this;
-        term.pause();
-        $.getJSON('https://meme-api.com/gimme/dankmemes', function(data){
-            var meme = data.preview[3];
-            term.echo("Here's a dank meme for you ( ͡° ͜ʖ ͡°)");
-            if (meme == null || meme == undefined) {
-                term.echo("Sorry, I can't find any dank memes for you. Try again later.");
+        if (e.keyCode == 40 && git != commands.length) {
+            git += 1;
+            if (commands[git] === undefined) {
+                textarea.value = "";
             } else {
-                term.echo(meme);
+                textarea.value = commands[git];
             }
-            term.resume();
-        });
-    },
+            command.innerHTML = textarea.value;
+        }
+    }
 }
 
-jQuery(document).ready(function($) {
-    $('body').terminal(App, {
-        greetings: "[[b;#44D544;]      _       ____  ____  _______      ___    \n" +
-            "     / \\     |_  _||_  _||_   __ \\   .'   `.  \n" +
-            "    / _ \\      \\ \\  / /    | |__) | /  .-.  \\ \n" + 
-            "   / ___ \\      > `' <     |  __ /  | |   | | \n" +
-            " _/ /   \ \\_  _/ /'`\\ \\_  _| |  \\ \\_\\  `-'  / \n" +
-            "|____| |____||____||____||____| |___|`.___.'  \n" +
-            "Heya!]\n\nType [[b;#44D544;]help] if you dont know what to do next.\n",
-        prompt: function(p){
-            var path = '~'
-            if(GitHub.stack.length > 0) {
-                for(i in GitHub.stack) {
-                    path+= '/';
-                    path+= GitHub.stack[i]
-                }
-            }
-            p(e + ":" + path + "$ ");
-        },
-        onBlur: function() {
-            // prevent loosing focus
-            return false;
-        },
-        tabcompletion: true
+function commander(cmd) {
+    switch (cmd.toLowerCase()) {
+        case "help":
+            loopLines(help, "color2 margin", 80);
+            break;
+        case "whois":
+            loopLines(whois, "color2 margin", 80);
+            break;
+        case "whoami":
+            loopLines(whoami, "color2 margin", 80);
+            break;
+        case "ls":
+            loopLines(ls, "color2 margin", 80);
+            break;
+        case "cat":
+            loopLines(cat, "color2 margin", 80);
+            break;
+        case "beep":
+            loopLines(beep, "color2 margin", 80);
+            break;
+        case "sudo":
+            addLine("Oh no, you're not admin... (°ロ°)", "color2", 80);
+            setTimeout(function () {
+                window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+            }, 1000);
+            break;
+        case "web":
+            addLine("Opening website...", "color2", 0);
+            newTab(website);
+            break;
+        case "social":
+            loopLines(social, "color2 margin", 80);
+            break;
+        case "secret":
+            liner.classList.add("password");
+            pw = true;
+            break;
+        case "projects":
+            loopLines(projects, "color2 margin", 80);
+            break;
+        case "passwd":
+            addLine("<span class=\"inherit\"> Lol! You're joking, right?</span>", "error", 100);
+            break;
+        case "history":
+            addLine("<br>", "", 0);
+            loopLines(commands, "color2", 80);
+            addLine("<br>", "command", 80 * commands.length + 50);
+            break;
+        case "email":
+            addLine('Opening mailto:<a href="mailto:aadhitya864@proton.me">aadhitya864@proton.me</a>...', "color2", 80);
+            newTab(email);
+            break;
+        case "clear":
+            setTimeout(function () {
+                terminal.innerHTML = '<a id="before"></a>';
+                before = document.getElementById("before");
+            }, 1);
+            break;
+        case "banner":
+            loopLines(banner, "", 80);
+            break;
+        // socials
+        case "twitter":
+            addLine("Opening Twitter...", "color2", 0);
+            newTab(twitter);
+            break;
+        case "linkedin":
+            addLine("Opening LinkedIn...", "color2", 0);
+            newTab(linkedin);
+            break;
+        case "github":
+            addLine("Opening GitHub...", "color2", 0);
+            newTab(github);
+            break;
+        case "exit":
+            addLine("Goodbye! (￣▽￣)ノ", "color2", 0);
+            setTimeout(function () {
+                window.close();
+            }, 1000);
+            break;
+        default:
+            addLine("<span class=\"inherit\">Command not found. For a list of commands, type <span class=\"command\">'help'</span>.</span>", "error", 100);
+            break;
+    }
+}
+
+function newTab(link) {
+    setTimeout(function () {
+        window.open(link, "_blank");
+    }, 500);
+}
+
+function addLine(text, style, time) {
+    var t = "";
+    for (let i = 0; i < text.length; i++) {
+        if (text.charAt(i) == " " && text.charAt(i + 1) == " ") {
+            t += "&nbsp;&nbsp;";
+            i++;
+        } else {
+            t += text.charAt(i);
+        }
+    }
+    setTimeout(function () {
+        var next = document.createElement("p");
+        next.innerHTML = t;
+        next.className = style;
+
+        before.parentNode.insertBefore(next, before);
+
+        window.scrollTo(0, document.body.offsetHeight);
+    }, time);
+}
+
+function loopLines(name, style, time) {
+    name.forEach(function (item, index) {
+        addLine(item, style, index * time);
     });
-});
+}
