@@ -1,10 +1,6 @@
 # Terma
 
-Terma is a terminal style portfolio website. _Work in progress_
-
-## Libraries Used
-
-jQuery, JS
+Terma is a terminal style portfolio website. This is based on m4tt72's [Terminal](https://github.com/m4tt72/terminal) project.
 
 ## License
 
