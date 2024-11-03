@@ -1,8 +1,8 @@
 var twitter = "https://www.twitter.com/kryox64/";
-var password = "axro";
+var password = "4xr0";
 var linkedin = "https://www.linkedin.com/in/alphax86/";
 var github = "https://github.com/alphax86/";
-var email = 'mailto:kryox64@wearehackerone.com';
+var email = 'mailto:aadhitya@axro.in';
 var website = "https://axro.in/";
 
 var oss = ["https://github.com/meshery/meshery", "https://github.com/layer5io/meshery-smp-action"]
@@ -10,7 +10,7 @@ var oss = ["https://github.com/meshery/meshery", "https://github.com/layer5io/me
 whois = [
   "<br>",
   "Hey, I'm Aadhitya!👋",
-  "I’m a software engineer living in Chennai, India. Currently, I’m working as SDE at Citi.",
+  "I’m a software engineer living in Chennai, India. Currently, I’m working as SDE 1 at Citi.",
   "My interest in computers started back in Grade 1 when I decided to tinker few things both in hardware and software.",
   "Graudally, I started to learn more about computers and programming which piqued interest.",
   "To know more about me, you could enter <span class=\"command\">'projects'</span> to view my projects, <span class=\"command\">'social'</span> to view my social networks,",
@@ -19,9 +19,7 @@ whois = [
 ];
 
 whoami = [
-  "<br>",
   "vistor",
-  "<br>"
 ];
 
 social = [
@@ -48,21 +46,23 @@ projects = [
 ];
 
 ls = [
-    "<br>",
     "I'm sorry but ls won't work here. (╯°□°）╯︵ ┻━┻",
-    "<br>"
 ];
 
 cat = [
-    "<br>",
     "I'm sorry but cat won't work here. (╯°□°）╯︵ ┻━┻",
-    "<br>"
+];
+
+ll = [
+    "I'm sorry but ll won't work here. (╯°□°）╯︵ ┻━┻",
+];
+
+rm = [
+    "Uhh... you can't do this right now ￣へ￣",
 ];
 
 beep = [
-    "<br>",
     "boop",
-    "<br>"
 ];
 
 help = [
@@ -83,7 +83,7 @@ help = [
 ];
 
 banner = [
-  '<span class="index">Initiating...</span>',
+  '<span class="index">Initiating Terminal...</span>',
     "   _        __  __      ____        U  ___ u", 
     'U /"\\  u    \\ \\/"/   U |  _"\\ u      \\/"_ \\/', 
     " \\/ _ \\/     /\\  /\\    \\| |_) |/      | | | | ",

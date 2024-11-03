@@ -61,7 +61,7 @@ body {
   }
   #liner::before {
     color: #00eb76;
-    content: "visitor@axro.com:~$";
+    content: "visitor:~$";
   }
   #liner.password::before {
     content: "Password:";
